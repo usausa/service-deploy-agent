@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="PInvoke.AdvApi32" Version="0.7.104" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20071.2" />
   </ItemGroup>
 
