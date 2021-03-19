@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
+    <PublishSingleFile>true</PublishSingleFile>
     <CodeAnalysisRuleSet>..\Service.Deploy.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
