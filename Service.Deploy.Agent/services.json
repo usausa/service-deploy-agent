@@ -1,0 +1,17 @@
+{
+  "Service": {
+    "Entry": [
+      {
+        "Name": "sample",
+        "Display": "Sample Service",
+        "Token": "123",
+        "Path": "D:\\WebApplication"
+      },
+      {
+        "Name": "sample",
+        "Token": "123",
+        "Path": "D:\\WebApplication2"
+      }
+    ]
+  }
+}

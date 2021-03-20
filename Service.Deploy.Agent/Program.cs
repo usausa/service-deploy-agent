@@ -1,6 +1,7 @@
 namespace Service.Deploy.Agent
 {
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
 
@@ -16,6 +17,10 @@ namespace Service.Deploy.Agent
         private static IHostBuilder CreateWebHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .UseWindowsService()
+                .ConfigureAppConfiguration((_, config) =>
+                {
+                    config.AddJsonFile("services.json", optional: false, reloadOnChange: true);
+                })
                 .ConfigureLogging((_, logging) =>
                 {
                     logging.ClearProviders();

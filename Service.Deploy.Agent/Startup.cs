@@ -9,6 +9,8 @@ namespace Service.Deploy.Agent
     using Microsoft.Extensions.Hosting;
     using Microsoft.OpenApi.Models;
 
+    using Service.Deploy.Agent.Settings;
+
     public class Startup
     {
         public IConfiguration Configuration { get; }
@@ -36,7 +38,7 @@ namespace Service.Deploy.Agent
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Deploy Agent", Version = "v1" });
             });
 
-            // TODO Settings
+            services.Configure<ServiceSetting>(Configuration.GetSection("Service"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
