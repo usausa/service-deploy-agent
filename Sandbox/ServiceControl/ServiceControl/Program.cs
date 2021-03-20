@@ -8,27 +8,64 @@ namespace ServiceControl
     {
         public static void Main()
         {
+            Debug.WriteLine(CreateService("WebApp", "Web Application", @"D:\WebApplication\WebApplication.exe"));
             Debug.WriteLine(StartService("WebApp"));
             Debug.WriteLine(StopService("WebApp"));
+            Debug.WriteLine(DeleteService("WebApp"));
         }
 
-        //using var scManager = AdvApi32.OpenSCManager(null, null, AdvApi32.ServiceManagerAccess.SC_MANAGER_CREATE_SERVICE);
-        //Console.WriteLine(scManager);
-        //using var service = AdvApi32.CreateService(
-        //    scManager,
-        //    "WebApp",
-        //    "Web Application",
-        //    0,
-        //    AdvApi32.ServiceType.SERVICE_WIN32_OWN_PROCESS,
-        //    AdvApi32.ServiceStartType.SERVICE_AUTO_START,
-        //    AdvApi32.ServiceErrorControl.SERVICE_ERROR_IGNORE,
-        //    @"D:\WebApplication\WebApplication.exe",
-        //    null,
-        //    0,
-        //    null,
-        //    null,
-        //    null);
-        //Console.WriteLine(service);
+        private static bool CreateService(
+            string serviceName,
+            string displayName,
+            string binPath)
+        {
+            using var scManager = AdvApi32.OpenSCManager(null, null, AdvApi32.ServiceManagerAccess.SC_MANAGER_CREATE_SERVICE);
+            if (scManager.IsInvalid)
+            {
+                return false;
+            }
+
+            using var service = AdvApi32.CreateService(
+                scManager,
+                serviceName,
+                displayName,
+                0,
+                AdvApi32.ServiceType.SERVICE_WIN32_OWN_PROCESS,
+                AdvApi32.ServiceStartType.SERVICE_AUTO_START, // TODO demand
+                AdvApi32.ServiceErrorControl.SERVICE_ERROR_IGNORE, // TODO normal
+                binPath,
+                null,
+                0,
+                null,
+                null,
+                null);
+            if (service.IsInvalid)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private static bool DeleteService(string serviceName)
+        {
+            using var scManager = AdvApi32.OpenSCManager(null, null, AdvApi32.ServiceManagerAccess.SC_MANAGER_CREATE_SERVICE);
+            if (scManager.IsInvalid)
+            {
+                return false;
+            }
+
+            using var service = AdvApi32.OpenService(
+                scManager,
+                serviceName,
+                AdvApi32.ServiceAccess.SERVICE_ALL_ACCESS);
+            if (service.IsInvalid)
+            {
+                return false;
+            }
+
+            return AdvApi32.DeleteService(service);
+        }
 
         private static bool StartService(string serviceName)
         {
