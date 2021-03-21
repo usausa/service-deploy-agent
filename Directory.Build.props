@@ -3,10 +3,21 @@
   <PropertyGroup>
     <LangVersion>9.0</LangVersion>
     <Nullable>enable</Nullable>
-    <Deterministic>true</Deterministic>
     <NoWarn>$(NoWarn),1573,1591,1712</NoWarn>
     <MSBuildWarningsAsMessages>SA0001</MSBuildWarningsAsMessages>
     <WarningsAsErrors>nullable</WarningsAsErrors>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Version>0.0.1-beta2</Version>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <MinClientVersion>2.12</MinClientVersion>
+    <Authors>machi_pon</Authors>
+    <Copyright>Copyright (c) 2021 machi_pon</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/usausa/Tool-ServiceDeploy</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/usausa/Tool-ServiceDeploy</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">

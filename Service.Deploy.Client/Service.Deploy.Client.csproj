@@ -3,7 +3,17 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>svcdeploy</ToolCommandName>
     <CodeAnalysisRuleSet>..\Service.Deploy.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>Usa.Tool.ServiceDeploy</PackageId>
+    <Title>Windows service deploy client tool</Title>
+    <Description>Windows service deploy client tool</Description>
+    <Summary>Windows service deploy client tool</Summary>
+    <PackageTags>deploy;installer;tools;windows-service</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
