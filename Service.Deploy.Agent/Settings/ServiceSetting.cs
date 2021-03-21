@@ -12,11 +12,15 @@ namespace Service.Deploy.Agent.Settings
         public string? Token { get; set; }
 
         [AllowNull]
-        public string Path { get; set; }
+        public string Directory { get; set; }
+
+        [AllowNull]
+        public string BinPath { get; set; }
     }
 
     public class ServiceSetting
     {
+        [SuppressMessage("Performance", "CA1819", Justification = "Ignore")]
         [AllowNull]
         public ServiceEntry[] Entry { get; set; }
     }
