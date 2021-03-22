@@ -4,6 +4,7 @@ namespace Service.Deploy.Agent
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Routing;
+    using Microsoft.AspNetCore.Server.Kestrel.Core;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
@@ -25,7 +26,10 @@ namespace Service.Deploy.Agent
         {
             services.AddHttpContextAccessor();
 
-            // TODO Upload limit
+            services.Configure<KestrelServerOptions>(options =>
+            {
+                options.Limits.MaxRequestBodySize = int.MaxValue;
+            });
 
             services.Configure<RouteOptions>(options =>
             {
