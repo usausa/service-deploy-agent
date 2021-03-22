@@ -30,7 +30,7 @@ namespace Service.Deploy.Agent.Controllers
         }
 
         [HttpPost("{name}")]
-        public IActionResult Update(string name, IFormFile archive, [FromQuery] string? token)
+        public IActionResult Update(string name, IFormFile archive, [FromHeader(Name = "X-Deploy-Token")] string? token)
         {
             log.LogInformation($"Deploy update request. name=[{name}]");
 
