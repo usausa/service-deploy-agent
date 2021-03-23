@@ -1,5 +1,8 @@
 namespace Service.Deploy.Agent
 {
+    using System;
+    using System.IO;
+
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Hosting;
@@ -11,6 +14,8 @@ namespace Service.Deploy.Agent
     {
         public static void Main(string[] args)
         {
+            Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
+
             CreateWebHostBuilder(args).Build().Run();
         }
 
@@ -19,6 +24,7 @@ namespace Service.Deploy.Agent
                 .UseWindowsService()
                 .ConfigureAppConfiguration((_, config) =>
                 {
+                    config.SetBasePath(Directory.GetCurrentDirectory());
                     config.AddJsonFile("services.json", optional: false, reloadOnChange: true);
                 })
                 .ConfigureLogging((_, logging) =>
