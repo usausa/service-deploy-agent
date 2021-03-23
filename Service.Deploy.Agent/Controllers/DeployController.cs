@@ -4,6 +4,7 @@ namespace Service.Deploy.Agent.Controllers
     using System.IO;
     using System.IO.Compression;
     using System.Linq;
+    using System.Threading;
 
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
@@ -49,6 +50,10 @@ namespace Service.Deploy.Agent.Controllers
 
             // Stop & Delete service
             ServiceHelper.StopService(entry.Name);
+
+            // TODO
+            Thread.Sleep(1000);
+
             ServiceHelper.DeleteService(entry.Name);
 
             // Extract archive
