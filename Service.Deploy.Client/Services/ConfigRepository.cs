@@ -4,7 +4,7 @@ namespace Service.Deploy.Client.Services
 
     public class ConfigRepository
     {
-        public ConfigRepository(string config)
+        public ConfigRepository(string? config)
         {
         }
 

@@ -8,8 +8,7 @@ namespace Service.Deploy.Client.Commands
     {
         public class Parameter
         {
-            [AllowNull]
-            public string Config { get; set; }
+            public string? Config { get; set; }
         }
 
         protected override Command CreateCommand() => new("config", "Config settings")
