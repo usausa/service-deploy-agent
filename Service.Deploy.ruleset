@@ -30,6 +30,8 @@
   </Rules>
   <Rules AnalyzerId="Microsoft.CodeQuality.Analyzers" RuleNamespace="Microsoft.CodeQuality.Analyzers">
     <Rule Id="CA1028" Action="None" />
+    <Rule Id="CA1034" Action="None" />
+    <Rule Id="CA1056" Action="None" />
     <Rule Id="CA1062" Action="None" />
     <Rule Id="CA1720" Action="None" />
   </Rules>
