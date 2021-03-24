@@ -1,7 +1,6 @@
 namespace Service.Deploy.Client
 {
     using System;
-    using System.Diagnostics;
     using System.IO;
     using System.IO.Compression;
     using System.Net.Http;
@@ -9,12 +8,16 @@ namespace Service.Deploy.Client
 
     public static class Program
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:Do not catch general exception types", Justification = "Ignore")]
         public static async Task Main(string[] args)
         {
             try
             {
                 // TODO
-                await ProcessDeployAsync(args[0], args[1], args[2], args[3]);
+                if (!await ProcessDeployAsync(args[0], args[1], args[2], args[3]))
+                {
+                    Environment.Exit(-1);
+                }
             }
             catch (Exception e)
             {
@@ -51,14 +54,14 @@ namespace Service.Deploy.Client
                 }
 
                 var info = new FileInfo(archive);
-                var fileContent = new StreamContent(File.OpenRead(archive));
+                using var fileContent = new StreamContent(File.OpenRead(archive));
                 multipart.Add(fileContent, "archive", info.Name);
 
                 request.Content = multipart;
 
                 var response = await client.SendAsync(request);
 
-                Debug.WriteLine($"{response.StatusCode} : {await response.Content.ReadAsStringAsync()}");
+                Console.WriteLine($"Deploy result: status=[{response.StatusCode}], message=[{await response.Content.ReadAsStringAsync()}]");
 
                 return response.IsSuccessStatusCode;
             }
