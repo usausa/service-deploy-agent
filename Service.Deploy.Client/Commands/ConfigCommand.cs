@@ -1,7 +1,7 @@
 namespace Service.Deploy.Client.Commands
 {
     using System.CommandLine;
-    using System.Diagnostics.CodeAnalysis;
+
     using Service.Deploy.Client.Framework;
 
     public sealed class ConfigCommand : GroupCommandBase
