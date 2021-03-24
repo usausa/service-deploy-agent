@@ -5,6 +5,7 @@ namespace Service.Deploy.Agent.Controllers
     using System.IO.Compression;
     using System.Linq;
     using System.Threading;
+    using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
@@ -31,7 +32,11 @@ namespace Service.Deploy.Agent.Controllers
         }
 
         [HttpPost("{name}")]
-        public IActionResult Update(string name, IFormFile archive, [FromHeader(Name = "X-Deploy-Token")] string? token)
+        public async ValueTask<IActionResult> Update(
+            string name,
+            IFormFile archive,
+            [FromHeader(Name = "X-Deploy-Token")] string? token,
+            CancellationToken cancel)
         {
             log.LogInformation($"Deploy update request. name=[{name}]");
 
@@ -50,9 +55,11 @@ namespace Service.Deploy.Agent.Controllers
 
             // Stop & Delete service
             ServiceHelper.StopService(entry.Name);
-
-            // TODO
-            Thread.Sleep(1000);
+            if (!await ServiceHelper.WaitForStopAsync(entry.Name, 10000, cancel))
+            {
+                log.LogWarning($"Stop service failed. name=[{name}]");
+                return Problem("Stop service failed.");
+            }
 
             ServiceHelper.DeleteService(entry.Name);
 
@@ -63,7 +70,7 @@ namespace Service.Deploy.Agent.Controllers
             }
             Directory.CreateDirectory(entry.Directory);
 
-            using var stream = archive.OpenReadStream();
+            await using var stream = archive.OpenReadStream();
             using var zip = new ZipArchive(stream, ZipArchiveMode.Read);
             zip.ExtractToDirectory(entry.Directory);
 
