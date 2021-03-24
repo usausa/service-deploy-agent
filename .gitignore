@@ -350,3 +350,4 @@ MigrationBackup/
 .ionide/
 
 __*
+/Service.Deploy.Client/Properties/launchSettings.json
