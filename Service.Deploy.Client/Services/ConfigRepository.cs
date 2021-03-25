@@ -25,10 +25,9 @@ namespace Service.Deploy.Client.Services
 
         private DeploySetting Read()
         {
-            var settings = File.Exists(file)
+            return File.Exists(file)
                 ? JsonSerializer.Deserialize<DeploySetting>(File.ReadAllText(file), Options) ?? new DeploySetting()
                 : new DeploySetting();
-            return settings;
         }
 
         private void Write(DeploySetting setting)
@@ -38,14 +37,14 @@ namespace Service.Deploy.Client.Services
 
         public DeployEntry? Find(string name)
         {
-            return Read().Entries!.FirstOrDefault(x => x.Name == name);
+            return Read().Entries.FirstOrDefault(x => x.Name == name);
         }
 
         public void Update(DeployEntry entry)
         {
             var setting = Read();
 
-            var current = setting.Entries?.FirstOrDefault(x => x.Name == entry.Name);
+            var current = setting.Entries.FirstOrDefault(x => x.Name == entry.Name);
             if (current != null)
             {
                 current.Url = entry.Url;
@@ -53,17 +52,10 @@ namespace Service.Deploy.Client.Services
             }
             else
             {
-                if (setting.Entries is null)
-                {
-                    setting.Entries = new[] { entry };
-                }
-                else
-                {
-                    var newEntries = new DeployEntry[setting.Entries.Length + 1];
-                    Array.Copy(setting.Entries, 0, newEntries, 0, setting.Entries.Length);
-                    setting.Entries = newEntries;
-                    setting.Entries[^1] = entry;
-                }
+                var newEntries = new DeployEntry[setting.Entries.Length + 1];
+                Array.Copy(setting.Entries, 0, newEntries, 0, setting.Entries.Length);
+                setting.Entries = newEntries;
+                setting.Entries[^1] = entry;
             }
 
             Write(setting);
@@ -72,11 +64,6 @@ namespace Service.Deploy.Client.Services
         public void Delete(string name)
         {
             var setting = Read();
-
-            if (setting.Entries is null)
-            {
-                return;
-            }
 
             for (var i = 0; i < setting.Entries.Length; i++)
             {

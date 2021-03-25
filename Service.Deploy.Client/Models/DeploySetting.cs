@@ -4,6 +4,8 @@ namespace Service.Deploy.Client.Models
 
     public class DeploySetting
     {
-        public DeployEntry[]? Entries { get; set; }
+        [SuppressMessage("Performance", "CA1819", Justification = "Ignore")]
+        [AllowNull]
+        public DeployEntry[] Entries { get; set; }
     }
 }
