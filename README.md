@@ -31,7 +31,7 @@ Edit services.json.
         "Display": "Sample Service",
         "Token": "xxxxxxxxxx",
         "Directory": "D:\\WebApplication",
-        "BinPath": "D:\\WebApplication\\Bin\\WebApplication.exe"
+        "BinPath": "D:\\WebApplication\\WebApplication.exe"
       }
     ]
   }
