@@ -23,31 +23,29 @@ namespace Service.Deploy.Client.Services
                 : config;
         }
 
-        private DeployEntry[] Read()
+        private DeploySetting Read()
         {
-            if (!File.Exists(file))
-            {
-                return Array.Empty<DeployEntry>();
-            }
-
-            return JsonSerializer.Deserialize<DeployEntry[]>(File.ReadAllText(file), Options) ?? Array.Empty<DeployEntry>();
+            var settings = File.Exists(file)
+                ? JsonSerializer.Deserialize<DeploySetting>(File.ReadAllText(file), Options) ?? new DeploySetting()
+                : new DeploySetting();
+            return settings;
         }
 
-        private void Write(DeployEntry[] entries)
+        private void Write(DeploySetting setting)
         {
-            File.WriteAllText(file, JsonSerializer.Serialize(entries, Options));
+            File.WriteAllText(file, JsonSerializer.Serialize(setting, Options));
         }
 
         public DeployEntry? Find(string name)
         {
-            return Read().FirstOrDefault(x => x.Name == name);
+            return Read().Entries!.FirstOrDefault(x => x.Name == name);
         }
 
         public void Update(DeployEntry entry)
         {
-            var entries = Read();
+            var setting = Read();
 
-            var current = entries.FirstOrDefault(x => x.Name == entry.Name);
+            var current = setting.Entries?.FirstOrDefault(x => x.Name == entry.Name);
             if (current != null)
             {
                 current.Url = entry.Url;
@@ -55,40 +53,54 @@ namespace Service.Deploy.Client.Services
             }
             else
             {
-                var newEntries = new DeployEntry[entries.Length + 1];
-                Array.Copy(entries, 0, newEntries, 0, entries.Length);
-                entries = newEntries;
-                entries[^1] = entry;
+                if (setting.Entries is null)
+                {
+                    setting.Entries = new[] { entry };
+                }
+                else
+                {
+                    var newEntries = new DeployEntry[setting.Entries.Length + 1];
+                    Array.Copy(setting.Entries, 0, newEntries, 0, setting.Entries.Length);
+                    setting.Entries = newEntries;
+                    setting.Entries[^1] = entry;
+                }
             }
 
-            Write(entries);
+            Write(setting);
         }
 
         public void Delete(string name)
         {
-            var entries = Read();
+            var setting = Read();
 
-            for (var i = 0; i < entries.Length; i++)
+            if (setting.Entries is null)
             {
-                if (entries[i].Name != name)
+                return;
+            }
+
+            for (var i = 0; i < setting.Entries.Length; i++)
+            {
+                if (setting.Entries[i].Name != name)
                 {
                     continue;
                 }
 
-                var newEntries = new DeployEntry[entries.Length - 1];
+                var newEntries = new DeployEntry[setting.Entries.Length - 1];
 
                 if (i > 0)
                 {
-                    Array.Copy(entries, 0, newEntries, 0, i);
+                    Array.Copy(setting.Entries, 0, newEntries, 0, i);
                 }
 
-                var left = entries.Length - i - 1;
+                var left = setting.Entries.Length - i - 1;
                 if (left > 0)
                 {
-                    Array.Copy(entries, i + 1, newEntries, i, left);
+                    Array.Copy(setting.Entries, i + 1, newEntries, i, left);
                 }
 
-                Write(newEntries);
+                setting.Entries = newEntries;
+
+                Write(setting);
 
                 break;
             }
