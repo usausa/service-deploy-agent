@@ -41,7 +41,7 @@ Edit services.json.
 ## Install client
 
 ```
-dotnet tool install --global --add-source . Usa.Tool.ServiceDeploy
+dotnet tool install --global Usa.Tool.ServiceDeploy
 ```
 
 ## Use client
