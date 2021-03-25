@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>0.0.1-beta2</Version>
+    <Version>0.1.0</Version>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <MinClientVersion>2.12</MinClientVersion>
     <Authors>machi_pon</Authors>
