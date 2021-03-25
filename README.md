@@ -1,4 +1,4 @@
-# svcdeploy - Windows Service deploy tool & agent
+# svcdeploy - Windows Service remote deploy tool & agent
 
 (TODO)
 
