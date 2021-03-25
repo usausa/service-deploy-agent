@@ -47,7 +47,7 @@ dotnet tool install --global Usa.Tool.ServiceDeploy
 ## Use client
 
 ```
-svcdeploy deploy -n WebApp -d D:\WebApplication\bin\Release\net5.0\publish\ -u https://server:50443/ -t xxxxxxxxxx
+svcdeploy deploy -n WebApp -d D:\Project\WebApplication\bin\Release\net5.0\publish\ -u https://server:50443/ -t xxxxxxxxxx
 ```
 
 ```
@@ -55,5 +55,5 @@ svcdeploy config update -n WebApp -u https://server:50443/ -t xxxxxxxxxx
 ```
 
 ```
-svcdeploy deploy -n WebApp -d D:\WebApplication\bin\Release\net5.0\publish\
+svcdeploy deploy -n WebApp -d D:\Project\WebApplication\bin\Release\net5.0\publish\
 ```
