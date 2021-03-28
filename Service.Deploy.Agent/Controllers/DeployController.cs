@@ -54,11 +54,13 @@ namespace Service.Deploy.Agent.Controllers
             }
 
             // Stop & Delete service
-            ServiceHelper.StopService(entry.Name);
-            if (!await ServiceHelper.WaitForStopAsync(entry.Name, 10000, cancel))
+            if (ServiceHelper.StopService(entry.Name))
             {
-                log.LogWarning($"Stop service failed. name=[{name}]");
-                return Problem("Stop service failed.");
+                if (!await ServiceHelper.WaitForStopAsync(entry.Name, 10000, cancel))
+                {
+                    log.LogWarning($"Stop service failed. name=[{name}]");
+                    return Problem("Stop service failed.");
+                }
             }
 
             ServiceHelper.DeleteService(entry.Name);
