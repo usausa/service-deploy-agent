@@ -18,7 +18,7 @@ namespace Service.Deploy.Client.Commands
 
         protected override Command CreateCommand() => new("delete", "Delete config")
         {
-            new Option<string>(new[] { "--name", "-n" }, "Service name") { IsRequired = true },
+            new Option<string>(new[] { "--name", "-n" }, "Service name") { IsRequired = true }
         };
 
         protected override ValueTask<int> ExecuteAsync(Parameter parameter, IConsole console, CancellationToken cancel)
