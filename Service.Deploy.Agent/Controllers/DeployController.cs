@@ -38,18 +38,18 @@ namespace Service.Deploy.Agent.Controllers
             [FromHeader(Name = "X-Deploy-Token")] string? token,
             CancellationToken cancel)
         {
-            log.LogInformation($"Deploy update request. name=[{name}]");
+            log.LogInformation("Deploy update request. name=[{Name}]", name);
 
             var entry = serviceSetting.Entry.FirstOrDefault(x => x.Name == name);
             if (entry is null)
             {
-                log.LogWarning($"Deploy entry not found. name=[{name}]");
+                log.LogWarning("Deploy entry not found. name=[{Name}]", name);
                 return NotFound();
             }
 
             if (!String.IsNullOrEmpty(entry.Token) && (entry.Token != token))
             {
-                log.LogWarning($"Deploy token is invalid. name=[{name}], token=[{token}]");
+                log.LogWarning("Deploy token is invalid. name=[{Name}], token=[{Token}]", name, token);
                 return Forbid();
             }
 
@@ -58,7 +58,7 @@ namespace Service.Deploy.Agent.Controllers
             {
                 if (!await ServiceHelper.WaitForStopAsync(entry.Name, 10000, cancel))
                 {
-                    log.LogWarning($"Stop service failed. name=[{name}]");
+                    log.LogWarning("Stop service failed. name=[{Name}]", name);
                     return Problem("Stop service failed.");
                 }
             }
@@ -79,17 +79,17 @@ namespace Service.Deploy.Agent.Controllers
             // Create & Start service
             if (!ServiceHelper.CreateService(entry.Name, entry.Display ?? entry.Name, entry.BinPath))
             {
-                log.LogWarning($"Create service failed. name=[{name}]");
+                log.LogWarning("Create service failed. name=[{Name}]", name);
                 return Problem("Create service failed.");
             }
 
             if (!ServiceHelper.StartService(entry.Name))
             {
-                log.LogWarning($"Start service failed. name=[{name}]");
+                log.LogWarning("Start service failed. name=[{Name}]", name);
                 return Problem("Start service failed.");
             }
 
-            log.LogInformation($"Deploy update success. name=[{name}]");
+            log.LogInformation("Deploy update success. name=[{Name}]", name);
             return Ok("Update success.");
         }
     }
