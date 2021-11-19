@@ -1,9 +1,8 @@
-namespace Service.Deploy.Client.Framework
-{
-    using System.CommandLine;
+namespace Service.Deploy.Client.Framework;
 
-    public interface ICommandBuilder
-    {
-        Command Build();
-    }
+using System.CommandLine;
+
+public interface ICommandBuilder
+{
+    Command Build();
 }

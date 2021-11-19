@@ -1,14 +1,13 @@
-namespace Service.Deploy.Client.Models
+namespace Service.Deploy.Client.Models;
+
+using System.Diagnostics.CodeAnalysis;
+
+public class DeployEntry
 {
-    using System.Diagnostics.CodeAnalysis;
+    [AllowNull]
+    public string Name { get; set; }
 
-    public class DeployEntry
-    {
-        [AllowNull]
-        public string Name { get; set; }
+    public string? Url { get; set; }
 
-        public string? Url { get; set; }
-
-        public string? Token { get; set; }
-    }
+    public string? Token { get; set; }
 }
