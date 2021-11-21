@@ -1,42 +1,72 @@
-namespace Service.Deploy.Agent;
-
-using System;
-using System.IO;
-
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+#pragma warning disable CA1812
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 using Serilog;
 
-public static class Program
+using Service.Deploy.Agent.Settings;
+
+// Configure builder
+var builder = WebApplication.CreateBuilder(args);
+
+Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
+
+// Service
+builder.Host.UseWindowsService();
+
+// Config
+builder.Host.ConfigureAppConfiguration((_, config) =>
 {
-    public static void Main(string[] args)
+    config.SetBasePath(Directory.GetCurrentDirectory());
+    config.AddJsonFile("services.json", optional: false, reloadOnChange: true);
+});
+
+// Log
+builder.Host
+    .ConfigureLogging((_, logging) =>
     {
-        Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
+        logging.ClearProviders();
+    })
+    .UseSerilog((hostingContext, loggerConfiguration) =>
+    {
+        loggerConfiguration.ReadFrom.Configuration(hostingContext.Configuration);
+    });
 
-        CreateWebHostBuilder(args).Build().Run();
-    }
+// Add services to the container.
+builder.Services.AddHttpContextAccessor();
 
-    private static IHostBuilder CreateWebHostBuilder(string[] args) =>
-        Host.CreateDefaultBuilder(args)
-            .UseWindowsService()
-            .ConfigureAppConfiguration((_, config) =>
-            {
-                config.SetBasePath(Directory.GetCurrentDirectory());
-                config.AddJsonFile("services.json", optional: false, reloadOnChange: true);
-            })
-            .ConfigureLogging((_, logging) =>
-            {
-                logging.ClearProviders();
-            })
-            .UseSerilog((hostingContext, loggerConfiguration) =>
-            {
-                loggerConfiguration.ReadFrom.Configuration(hostingContext.Configuration);
-            })
-            .ConfigureWebHostDefaults(webBuilder =>
-            {
-                webBuilder.UseStartup<Startup>();
-            });
+builder.Services.Configure<KestrelServerOptions>(options =>
+{
+    options.Limits.MaxRequestBodySize = int.MaxValue;
+});
+
+builder.Services.Configure<RouteOptions>(options =>
+{
+    options.AppendTrailingSlash = true;
+});
+
+builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+builder.Services.Configure<ServiceSetting>(builder.Configuration.GetSection("Service"));
+
+// Configure
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
+
+app.UseHttpsRedirection();
+
+app.UseAuthorization();
+
+app.MapControllers();
+app.MapGet("/", async context => await context.Response.WriteAsync("Deploy agent"));
+
+app.Run();
