@@ -14,7 +14,7 @@
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <MinClientVersion>2.12</MinClientVersion>
     <Authors>machi_pon</Authors>
-    <Copyright>Copyright (c) 2021 machi_pon</Copyright>
+    <Copyright>Copyright (c) 2022 machi_pon</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/usausa/Tool-ServiceDeploy</PackageProjectUrl>
     <RepositoryUrl>https://github.com/usausa/Tool-ServiceDeploy</RepositoryUrl>
