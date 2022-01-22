@@ -1,14 +1,19 @@
 #pragma warning disable CA1812
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.Extensions.Hosting.WindowsServices;
 
 using Serilog;
 
 using Service.Deploy.Agent.Settings;
 
-// Configure builder
-var builder = WebApplication.CreateBuilder(args);
+Directory.SetCurrentDirectory(AppContext.BaseDirectory);
 
-Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
+// Configure builder
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+{
+    Args = args,
+    ContentRootPath = WindowsServiceHelpers.IsWindowsService() ? AppContext.BaseDirectory : default
+});
 
 // Service
 builder.Host.UseWindowsService();

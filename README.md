@@ -1,7 +1,5 @@
 # svcdeploy - Windows Service remote deploy tool & agent
 
-(TODO)
-
 ## Install agent
 
 Copy agent files to install directory.
