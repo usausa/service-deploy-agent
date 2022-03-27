@@ -12,11 +12,12 @@ var rootCommand = new RootCommand("Service deploy tool");
 
 // Config
 var configCommand = new Command("config", "Config settings");
-configCommand.AddOption(new Option<string>(new[] { "--config", "-c" }, "Config file"));
 rootCommand.Add(configCommand);
+configCommand.AddOption(new Option<string>(new[] { "--config", "-c" }, "Config file"));
 
 // Config Update
 var configUpdateCommand = new Command("update", "Update config");
+configCommand.Add(configUpdateCommand);
 configUpdateCommand.AddOption(new Option<string>(new[] { "--name", "-n" }, "Service name") { IsRequired = true });
 configUpdateCommand.AddOption(new Option<string>(new[] { "--url", "-u" }, "Agent url"));
 configUpdateCommand.AddOption(new Option<string>(new[] { "--token", "-t" }, "Authentication token"));
@@ -25,20 +26,20 @@ configUpdateCommand.Handler = CommandHandler.Create((string config, string name,
     var repository = new ConfigRepository(config);
     repository.Update(new DeployEntry { Name = name, Url = url, Token = token });
 });
-configCommand.Add(configUpdateCommand);
 
 // Config Delete
 var configDeleteCommand = new Command("delete", "Delete config");
+configCommand.Add(configUpdateCommand);
 configDeleteCommand.AddOption(new Option<string>(new[] { "--name", "-n" }, "Service name") { IsRequired = true });
 configDeleteCommand.Handler = CommandHandler.Create((string config, string name) =>
 {
     var repository = new ConfigRepository(config);
     repository.Delete(name);
 });
-configDeleteCommand.Add(configUpdateCommand);
 
-// Update
+// Deploy
 var deployCommand = new Command("deploy", "Deploy service");
+rootCommand.Add(deployCommand);
 deployCommand.AddOption(new Option<string>(new[] { "--name", "-n" }, "Service name") { IsRequired = true });
 deployCommand.AddOption(new Option<string>(new[] { "--directory", "-d" }, "Archive directory") { IsRequired = true });
 deployCommand.AddOption(new Option<string>(new[] { "--config", "-c" }, "Config file"));
@@ -103,6 +104,5 @@ deployCommand.Handler = CommandHandler.Create(async (IConsole console, string na
         File.Delete(archive);
     }
 });
-deployCommand.Add(configUpdateCommand);
 
 return await rootCommand.InvokeAsync(args);
