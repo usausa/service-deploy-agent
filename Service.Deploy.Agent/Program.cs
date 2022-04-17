@@ -4,6 +4,7 @@ using Microsoft.Extensions.Hosting.WindowsServices;
 
 using Serilog;
 
+using Service.Deploy.Agent.Managers;
 using Service.Deploy.Agent.Settings;
 
 Directory.SetCurrentDirectory(AppContext.BaseDirectory);
@@ -16,7 +17,9 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 });
 
 // Service
-builder.Host.UseWindowsService();
+builder.Host
+    .UseWindowsService()
+    .UseSystemd();
 
 // Config
 builder.Host.ConfigureAppConfiguration((_, config) =>
@@ -55,6 +58,16 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.Configure<ServiceSetting>(builder.Configuration.GetSection("Service"));
+
+// Manager
+if (OperatingSystem.IsWindows())
+{
+    builder.Services.AddSingleton<IServiceManager, WindowsServiceManager>();
+}
+else
+{
+    builder.Services.AddSingleton<IServiceManager, SystemdServiceManager>();
+}
 
 // Configure
 var app = builder.Build();

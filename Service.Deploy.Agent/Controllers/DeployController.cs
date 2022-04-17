@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-using Service.Deploy.Agent.Helpers;
+using Service.Deploy.Agent.Managers;
 using Service.Deploy.Agent.Settings;
 
 [ApiController]
@@ -23,12 +23,16 @@ public class DeployController : ControllerBase
 
     private readonly ServiceSetting serviceSetting;
 
+    private readonly IServiceManager serviceManager;
+
     public DeployController(
         ILogger<DeployController> log,
-        IOptionsSnapshot<ServiceSetting> serviceSetting)
+        IOptionsSnapshot<ServiceSetting> serviceSetting,
+        IServiceManager serviceManager)
     {
         this.log = log;
         this.serviceSetting = serviceSetting.Value;
+        this.serviceManager = serviceManager;
     }
 
     [HttpPost("{name}")]
@@ -53,17 +57,12 @@ public class DeployController : ControllerBase
             return Forbid();
         }
 
-        // Stop & Delete service
-        if (ServiceHelper.StopService(entry.Name))
+        // Stop service
+        if (!await serviceManager.StartAsync(entry, cancel))
         {
-            if (!await ServiceHelper.WaitForStopAsync(entry.Name, 10000, cancel))
-            {
-                log.LogWarning("Stop service failed. name=[{Name}]", name);
-                return Problem("Stop service failed.");
-            }
+            log.LogWarning("Stop service failed. name=[{Name}]", name);
+            return Problem("Stop service failed.");
         }
-
-        ServiceHelper.DeleteService(entry.Name);
 
         // Extract archive
         if (Directory.Exists(entry.Directory))
@@ -76,14 +75,7 @@ public class DeployController : ControllerBase
         using var zip = new ZipArchive(stream, ZipArchiveMode.Read);
         zip.ExtractToDirectory(entry.Directory);
 
-        // Create & Start service
-        if (!ServiceHelper.CreateService(entry.Name, entry.Display ?? entry.Name, entry.BinPath))
-        {
-            log.LogWarning("Create service failed. name=[{Name}]", name);
-            return Problem("Create service failed.");
-        }
-
-        if (!ServiceHelper.StartService(entry.Name))
+        if (!await serviceManager.StartAsync(entry, cancel))
         {
             log.LogWarning("Start service failed. name=[{Name}]", name);
             return Problem("Start service failed.");
