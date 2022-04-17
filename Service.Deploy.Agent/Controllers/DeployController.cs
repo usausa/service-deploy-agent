@@ -54,7 +54,7 @@ public class DeployController : ControllerBase
         if (!String.IsNullOrEmpty(entry.Token) && (entry.Token != token))
         {
             log.LogWarning("Deploy token is invalid. name=[{Name}], token=[{Token}]", name, token);
-            return Forbid();
+            return BadRequest();
         }
 
         // Stop service
