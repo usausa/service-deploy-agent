@@ -58,7 +58,7 @@ public class DeployController : ControllerBase
         }
 
         // Stop service
-        if (!await serviceManager.StartAsync(entry, cancel))
+        if (!await serviceManager.StopAsync(entry, cancel))
         {
             log.LogWarning("Stop service failed. name=[{Name}]", name);
             return Problem("Stop service failed.");
@@ -75,6 +75,7 @@ public class DeployController : ControllerBase
         using var zip = new ZipArchive(stream, ZipArchiveMode.Read);
         zip.ExtractToDirectory(entry.Directory);
 
+        // Start service
         if (!await serviceManager.StartAsync(entry, cancel))
         {
             log.LogWarning("Start service failed. name=[{Name}]", name);
