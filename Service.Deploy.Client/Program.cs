@@ -71,7 +71,7 @@ deployCommand.Handler = CommandHandler.Create(async (IConsole console, string na
         // Update
         using var handler = new HttpClientHandler
         {
-            ServerCertificateCustomValidationCallback = (_, _, _, _) => true
+            ServerCertificateCustomValidationCallback = static (_, _, _, _) => true
         };
         using var client = new HttpClient(handler)
         {
