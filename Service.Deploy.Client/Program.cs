@@ -6,7 +6,7 @@ using System.IO.Compression;
 using Service.Deploy.Client.Models;
 using Service.Deploy.Client.Services;
 
-#pragma warning disable CA1812
+#pragma warning disable CA1852
 
 var rootCommand = new RootCommand("Service deploy tool");
 

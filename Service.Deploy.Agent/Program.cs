@@ -1,4 +1,3 @@
-#pragma warning disable CA1812
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Hosting.WindowsServices;
 
@@ -6,6 +5,8 @@ using Serilog;
 
 using Service.Deploy.Agent.Managers;
 using Service.Deploy.Agent.Settings;
+
+#pragma warning disable CA1852
 
 Directory.SetCurrentDirectory(AppContext.BaseDirectory);
 
