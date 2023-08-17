@@ -69,15 +69,11 @@ deployCommand.Handler = CommandHandler.Create(async (IConsole console, string na
         ZipFile.CreateFromDirectory(directory, archive);
 
         // Update
-        using var handler = new HttpClientHandler
-        {
-            ServerCertificateCustomValidationCallback = static (_, _, _, _) => true
-        };
-        using var client = new HttpClient(handler)
-        {
-            Timeout = new TimeSpan(0, 0, 5, 0),
-            BaseAddress = new Uri(url)
-        };
+        using var handler = new HttpClientHandler();
+        handler.ServerCertificateCustomValidationCallback = static (_, _, _, _) => true;
+        using var client = new HttpClient(handler);
+        client.Timeout = new TimeSpan(0, 0, 5, 0);
+        client.BaseAddress = new Uri(url);
 
         using var request = new HttpRequestMessage(HttpMethod.Post, $"deploy/update/{name}");
         using var multipart = new MultipartFormDataContent();

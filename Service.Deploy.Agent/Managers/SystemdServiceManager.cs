@@ -8,13 +8,11 @@ public class SystemdServiceManager : IServiceManager
 {
     public ValueTask<bool> StartAsync(ServiceEntry entry, CancellationToken cancel)
     {
-        using var chmod = new Process
+        using var chmod = new Process();
+        chmod.StartInfo = new ProcessStartInfo
         {
-            StartInfo = new ProcessStartInfo
-            {
-                FileName = "/usr/bin/chmod",
-                Arguments = $"+x {entry.BinPath}"
-            }
+            FileName = "/usr/bin/chmod",
+            Arguments = $"+x {entry.BinPath}"
         };
         chmod.Start();
         chmod.WaitForExit();
@@ -23,13 +21,11 @@ public class SystemdServiceManager : IServiceManager
             return ValueTask.FromResult(false);
         }
 
-        using var service = new Process
+        using var service = new Process();
+        service.StartInfo = new ProcessStartInfo
         {
-            StartInfo = new ProcessStartInfo
-            {
-                FileName = "/usr/bin/systemctl",
-                Arguments = $"start {entry.Name}"
-            }
+            FileName = "/usr/bin/systemctl",
+            Arguments = $"start {entry.Name}"
         };
         service.Start();
         service.WaitForExit();
@@ -43,13 +39,11 @@ public class SystemdServiceManager : IServiceManager
 
     public ValueTask<bool> StopAsync(ServiceEntry entry, CancellationToken cancel)
     {
-        using var service = new Process
+        using var service = new Process();
+        service.StartInfo = new ProcessStartInfo
         {
-            StartInfo = new ProcessStartInfo
-            {
-                FileName = "/usr/bin/systemctl",
-                Arguments = $"stop {entry.Name}"
-            }
+            FileName = "/usr/bin/systemctl",
+            Arguments = $"stop {entry.Name}"
         };
         service.Start();
         service.WaitForExit();
