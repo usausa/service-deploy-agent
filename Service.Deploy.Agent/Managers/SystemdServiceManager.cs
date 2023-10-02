@@ -6,7 +6,7 @@ using Service.Deploy.Agent.Settings;
 
 public class SystemdServiceManager : IServiceManager
 {
-    public ValueTask<bool> StartAsync(ServiceEntry entry, CancellationToken cancel)
+    public async ValueTask<bool> StartAsync(ServiceEntry entry, CancellationToken cancel)
     {
         using var chmod = new Process();
         chmod.StartInfo = new ProcessStartInfo
@@ -15,10 +15,10 @@ public class SystemdServiceManager : IServiceManager
             Arguments = $"+x {entry.BinPath}"
         };
         chmod.Start();
-        chmod.WaitForExit();
+        await chmod.WaitForExitAsync(cancel);
         if (chmod.ExitCode != 0)
         {
-            return ValueTask.FromResult(false);
+            return false;
         }
 
         using var service = new Process();
@@ -28,16 +28,16 @@ public class SystemdServiceManager : IServiceManager
             Arguments = $"start {entry.Name}"
         };
         service.Start();
-        service.WaitForExit();
+        await service.WaitForExitAsync(cancel);
         if (service.ExitCode != 0)
         {
-            return ValueTask.FromResult(false);
+            return false;
         }
 
-        return ValueTask.FromResult(true);
+        return true;
     }
 
-    public ValueTask<bool> StopAsync(ServiceEntry entry, CancellationToken cancel)
+    public async ValueTask<bool> StopAsync(ServiceEntry entry, CancellationToken cancel)
     {
         using var service = new Process();
         service.StartInfo = new ProcessStartInfo
@@ -46,12 +46,12 @@ public class SystemdServiceManager : IServiceManager
             Arguments = $"stop {entry.Name}"
         };
         service.Start();
-        service.WaitForExit();
+        await service.WaitForExitAsync(cancel);
         if (service.ExitCode != 0)
         {
-            return ValueTask.FromResult(false);
+            return false;
         }
 
-        return ValueTask.FromResult(true);
+        return true;
     }
 }
