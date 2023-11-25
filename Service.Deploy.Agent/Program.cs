@@ -28,11 +28,10 @@ builder.Configuration.AddJsonFile("services.json", optional: false, reloadOnChan
 
 // Log
 builder.Logging.ClearProviders();
-builder.Host
-    .UseSerilog((hostingContext, loggerConfiguration) =>
-    {
-        loggerConfiguration.ReadFrom.Configuration(hostingContext.Configuration);
-    });
+builder.Services.AddSerilog(option =>
+{
+    option.ReadFrom.Configuration(builder.Configuration);
+});
 
 // Add services to the container.
 builder.Services.AddHttpContextAccessor();
