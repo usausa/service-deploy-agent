@@ -37,12 +37,12 @@ builder.Host
 // Add services to the container.
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.Configure<KestrelServerOptions>(options =>
+builder.Services.Configure<KestrelServerOptions>(static options =>
 {
     options.Limits.MaxRequestBodySize = int.MaxValue;
 });
 
-builder.Services.Configure<RouteOptions>(options =>
+builder.Services.Configure<RouteOptions>(static options =>
 {
     options.AppendTrailingSlash = true;
 });
