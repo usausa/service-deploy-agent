@@ -1,5 +1,3 @@
-using System.Reflection;
-
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Hosting.WindowsServices;
 
@@ -25,7 +23,7 @@ builder.Host
     .UseSystemd();
 
 // Config
-builder.Configuration.SetBasePath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!);
+builder.Configuration.SetBasePath(AppContext.BaseDirectory);
 builder.Configuration.AddJsonFile("services.json", optional: false, reloadOnChange: true);
 
 // Log
