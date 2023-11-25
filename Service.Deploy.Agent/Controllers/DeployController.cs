@@ -37,25 +37,25 @@ public class DeployController : ControllerBase
         [FromHeader(Name = "X-Deploy-Token")] string? token,
         CancellationToken cancel)
     {
-        log.LogInformation("Deploy update request. name=[{Name}]", name);
+        log.InfoDeployUpdateRequest(name);
 
         var entry = serviceSetting.Entry.FirstOrDefault(x => x.Name == name);
         if (entry is null)
         {
-            log.LogWarning("Deploy entry not found. name=[{Name}]", name);
+            log.WarnDeployEntryNotFound(name);
             return NotFound();
         }
 
         if (!String.IsNullOrEmpty(entry.Token) && (entry.Token != token))
         {
-            log.LogWarning("Deploy token is invalid. name=[{Name}], token=[{Token}]", name, token);
+            log.WarnDeployTokenIsInvalid(name, token);
             return BadRequest();
         }
 
         // Stop service
         if (!await serviceManager.StopAsync(entry, cancel))
         {
-            log.LogWarning("Stop service failed. name=[{Name}]", name);
+            log.WarnStopServiceFailed(name);
             return Problem("Stop service failed.");
         }
 
@@ -73,11 +73,11 @@ public class DeployController : ControllerBase
         // Start service
         if (!await serviceManager.StartAsync(entry, cancel))
         {
-            log.LogWarning("Start service failed. name=[{Name}]", name);
+            log.WarnStartServiceFailed(name);
             return Problem("Start service failed.");
         }
 
-        log.LogInformation("Deploy update success. name=[{Name}]", name);
+        log.InfoDeployUpdateSuccess(name);
         return Ok("Update success.");
     }
 }

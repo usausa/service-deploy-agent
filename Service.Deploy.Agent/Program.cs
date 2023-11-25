@@ -1,3 +1,5 @@
+using System.Reflection;
+
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Hosting.WindowsServices;
 
@@ -23,18 +25,12 @@ builder.Host
     .UseSystemd();
 
 // Config
-builder.Host.ConfigureAppConfiguration((_, config) =>
-{
-    config.SetBasePath(Directory.GetCurrentDirectory());
-    config.AddJsonFile("services.json", optional: false, reloadOnChange: true);
-});
+builder.Configuration.SetBasePath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!);
+builder.Configuration.AddJsonFile("services.json", optional: false, reloadOnChange: true);
 
 // Log
+builder.Logging.ClearProviders();
 builder.Host
-    .ConfigureLogging((_, logging) =>
-    {
-        logging.ClearProviders();
-    })
     .UseSerilog((hostingContext, loggerConfiguration) =>
     {
         loggerConfiguration.ReadFrom.Configuration(hostingContext.Configuration);
@@ -86,6 +82,6 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
-app.MapGet("/", async context => await context.Response.WriteAsync("Deploy agent"));
+app.MapGet("/", context => context.Response.WriteAsync("Deploy agent"));
 
 app.Run();
