@@ -1,10 +1,8 @@
 namespace Service.Deploy.Client.Models;
 
-using System;
-
 #pragma warning disable CA1819
 public class DeploySetting
 {
-    public DeployEntry[] Entries { get; set; } = Array.Empty<DeployEntry>();
+    public DeployEntry[] Entries { get; set; } = [];
 }
 #pragma warning restore CA1819

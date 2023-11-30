@@ -6,22 +6,22 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <MSBuildWarningsAsMessages>SA0001</MSBuildWarningsAsMessages>
     <WarningsAsErrors>nullable</WarningsAsErrors>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
   </PropertyGroup>
 
   <PropertyGroup>
     <Version>1.1.0</Version>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <MinClientVersion>2.12</MinClientVersion>
     <Authors>machi_pon</Authors>
     <Copyright>Copyright (c) 2022 machi_pon</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/usausa/Tool-ServiceDeploy</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/usausa/Tool-ServiceDeploy</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <AnalysisMode>All</AnalysisMode>
+    <AnalysisLevel>latest</AnalysisLevel>
   </PropertyGroup>
 
   <ItemGroup>

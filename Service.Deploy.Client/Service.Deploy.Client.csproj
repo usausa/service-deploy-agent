@@ -12,7 +12,6 @@
     <PackageId>Usa.Tool.ServiceDeploy</PackageId>
     <Title>Windows service deploy client tool</Title>
     <Description>Windows service deploy client tool</Description>
-    <Summary>Windows service deploy client tool</Summary>
     <PackageTags>deploy;installer;tools;windows-service</PackageTags>
   </PropertyGroup>
 
