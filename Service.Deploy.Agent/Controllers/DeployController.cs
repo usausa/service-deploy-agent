@@ -12,11 +12,11 @@ using Service.Deploy.Agent.Settings;
 
 [ApiController]
 [Route("[controller]/[action]")]
-public class DeployController : ControllerBase
+public sealed class DeployController : ControllerBase
 {
     private readonly ILogger<DeployController> log;
 
-    private readonly ServiceSetting serviceSetting;
+    private readonly IOptionsSnapshot<ServiceSetting> serviceSetting;
 
     private readonly IServiceManager serviceManager;
 
@@ -26,7 +26,7 @@ public class DeployController : ControllerBase
         IServiceManager serviceManager)
     {
         this.log = log;
-        this.serviceSetting = serviceSetting.Value;
+        this.serviceSetting = serviceSetting;
         this.serviceManager = serviceManager;
     }
 
@@ -39,7 +39,7 @@ public class DeployController : ControllerBase
     {
         log.InfoDeployUpdateRequest(name);
 
-        var entry = serviceSetting.Entry.FirstOrDefault(x => x.Name == name);
+        var entry = serviceSetting.Value.Entry.FirstOrDefault(x => x.Name == name);
         if (entry is null)
         {
             log.WarnDeployEntryNotFound(name);

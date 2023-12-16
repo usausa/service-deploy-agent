@@ -4,7 +4,7 @@ using System.Text.Json;
 
 using Service.Deploy.Client.Models;
 
-public class ConfigRepository
+public sealed class ConfigRepository
 {
     private static readonly JsonSerializerOptions Options = new()
     {

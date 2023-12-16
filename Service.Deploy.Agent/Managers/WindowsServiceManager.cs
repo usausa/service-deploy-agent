@@ -3,7 +3,7 @@ namespace Service.Deploy.Agent.Managers;
 using Service.Deploy.Agent.Helpers;
 using Service.Deploy.Agent.Settings;
 
-public class WindowsServiceManager : IServiceManager
+public sealed class WindowsServiceManager : IServiceManager
 {
     public ValueTask<bool> StartAsync(ServiceEntry entry, CancellationToken cancel)
     {

@@ -1,6 +1,6 @@
 namespace Service.Deploy.Client.Models;
 
-public class DeployEntry
+public sealed class DeployEntry
 {
     public string Name { get; set; } = default!;
 

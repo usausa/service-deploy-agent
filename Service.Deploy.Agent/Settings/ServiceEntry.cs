@@ -1,6 +1,6 @@
 namespace Service.Deploy.Agent.Settings;
 
-public class ServiceEntry
+public sealed class ServiceEntry
 {
     public string Name { get; set; } = default!;
 

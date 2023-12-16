@@ -1,7 +1,7 @@
 namespace Service.Deploy.Client.Models;
 
 #pragma warning disable CA1819
-public class DeploySetting
+public sealed class DeploySetting
 {
     public DeployEntry[] Entries { get; set; } = [];
 }

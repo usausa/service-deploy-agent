@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 using Service.Deploy.Agent.Settings;
 
-public class SystemdServiceManager : IServiceManager
+public sealed class SystemdServiceManager : IServiceManager
 {
     public async ValueTask<bool> StartAsync(ServiceEntry entry, CancellationToken cancel)
     {
