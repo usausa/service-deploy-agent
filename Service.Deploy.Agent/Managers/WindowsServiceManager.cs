@@ -24,7 +24,7 @@ public sealed class WindowsServiceManager : IServiceManager
     {
         if (ServiceHelper.StopService(entry.Name))
         {
-            if (!await ServiceHelper.WaitForStopAsync(entry.Name, 10000, cancel))
+            if (!await ServiceHelper.WaitForStopAsync(entry.Name, 30000, cancel))
             {
                 return false;
             }
