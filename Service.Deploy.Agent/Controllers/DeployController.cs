@@ -60,10 +60,26 @@ public sealed class DeployController : ControllerBase
         }
 
         // Extract archive
-        if (Directory.Exists(entry.Directory))
+        for (var i = 0; i < 15; i++)
         {
-            Directory.Delete(entry.Directory, true);
+            // ReSharper disable once EmptyGeneralCatchClause
+#pragma warning disable CA1031
+            try
+            {
+                if (Directory.Exists(entry.Directory))
+                {
+                    Directory.Delete(entry.Directory, true);
+                }
+                break;
+            }
+            catch
+            {
+            }
+#pragma warning restore CA1031
+
+            await Task.Delay(1000, cancel);
         }
+
         Directory.CreateDirectory(entry.Directory);
 
         await using var stream = archive.OpenReadStream();
