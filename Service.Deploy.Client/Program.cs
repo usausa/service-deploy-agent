@@ -21,7 +21,7 @@ configCommand.Add(configUpdateCommand);
 configUpdateCommand.AddOption(new Option<string>(["--name", "-n"], "Service name") { IsRequired = true });
 configUpdateCommand.AddOption(new Option<string>(["--url", "-u"], "Agent url"));
 configUpdateCommand.AddOption(new Option<string>(["--token", "-t"], "Authentication token"));
-configUpdateCommand.Handler = CommandHandler.Create((string config, string name, string? url, string? token) =>
+configUpdateCommand.Handler = CommandHandler.Create(static (string config, string name, string? url, string? token) =>
 {
     var repository = new ConfigRepository(config);
     repository.Update(new DeployEntry { Name = name, Url = url, Token = token });
@@ -31,7 +31,7 @@ configUpdateCommand.Handler = CommandHandler.Create((string config, string name,
 var configDeleteCommand = new Command("delete", "Delete config");
 configCommand.Add(configUpdateCommand);
 configDeleteCommand.AddOption(new Option<string>(["--name", "-n"], "Service name") { IsRequired = true });
-configDeleteCommand.Handler = CommandHandler.Create((string config, string name) =>
+configDeleteCommand.Handler = CommandHandler.Create(static (string config, string name) =>
 {
     var repository = new ConfigRepository(config);
     repository.Delete(name);
@@ -45,7 +45,7 @@ deployCommand.AddOption(new Option<string>(["--directory", "-d"], "Archive direc
 deployCommand.AddOption(new Option<string>(["--config", "-c"], "Config file"));
 deployCommand.AddOption(new Option<string>(["--url", "-u"], "Agent url"));
 deployCommand.AddOption(new Option<string>(["--token", "-t"], "Authentication token"));
-deployCommand.Handler = CommandHandler.Create(async (IConsole console, string name, string directory, string? config, string? url, string? token, CancellationToken cancel) =>
+deployCommand.Handler = CommandHandler.Create(static async (IConsole console, string name, string directory, string? config, string? url, string? token, CancellationToken cancel) =>
 {
     if (String.IsNullOrEmpty(url) || String.IsNullOrEmpty(token))
     {
