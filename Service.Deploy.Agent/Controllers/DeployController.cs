@@ -83,8 +83,8 @@ public sealed class DeployController : ControllerBase
         Directory.CreateDirectory(entry.Directory);
 
         await using var stream = archive.OpenReadStream();
-        using var zip = new ZipArchive(stream, ZipArchiveMode.Read);
-        zip.ExtractToDirectory(entry.Directory);
+        await using var zip = new ZipArchive(stream, ZipArchiveMode.Read);
+        await zip.ExtractToDirectoryAsync(entry.Directory, cancel);
 
         // Start service
         if (!await serviceManager.StartAsync(entry, cancel))

@@ -66,7 +66,7 @@ deployCommand.Handler = CommandHandler.Create(static async (IConsole console, st
     try
     {
         // Archive
-        ZipFile.CreateFromDirectory(directory, archive);
+        await ZipFile.CreateFromDirectoryAsync(directory, archive, cancel);
 
         // Update
         using var handler = new HttpClientHandler();
