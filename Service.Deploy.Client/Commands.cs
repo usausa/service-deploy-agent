@@ -27,28 +27,28 @@ public static class CommandBuilderExtensions
 }
 
 // Config
-[Command("config", Description = "Config settings")]
+[Command("config", "Config settings")]
 public sealed class ConfigCommand
 {
 }
 
 public abstract class ConfigCommandBase
 {
-    [Option<string>("--config", "-c", Description = "Config file", IsRequired = true)]
+    [Option<string>("--config", "-c", Description = "Config file", Required = true)]
     public string Config { get; set; } = default!;
 }
 
 // Config Update
-[Command("update", Description = "Update config")]
+[Command("update", "Update config")]
 public sealed class ConfigUpdateCommand : ConfigCommandBase, ICommandHandler
 {
-    [Option<string>("--name", "-n", Description = "Service name", IsRequired = true)]
+    [Option<string>("--name", "-n", Description = "Service name", Required = true)]
     public string Name { get; set; } = default!;
 
-    [Option<string>("--url", "-u", Description = "Agent url", IsRequired = true)]
+    [Option<string>("--url", "-u", Description = "Agent url", Required = true)]
     public string Url { get; set; } = default!;
 
-    [Option<string>("--token", "-t", Description = "Authentication token", IsRequired = true)]
+    [Option<string>("--token", "-t", Description = "Authentication token", Required = true)]
     public string Token { get; set; } = default!;
 
     public ValueTask ExecuteAsync(CommandContext context)
@@ -61,10 +61,10 @@ public sealed class ConfigUpdateCommand : ConfigCommandBase, ICommandHandler
 }
 
 // Config Delete
-[Command("delete", Description = "Delete config")]
+[Command("delete", "Delete config")]
 public sealed class ConfigDeleteCommand : ConfigCommandBase, ICommandHandler
 {
-    [Option<string>("--name", "-n", Description = "Service name", IsRequired = true)]
+    [Option<string>("--name", "-n", Description = "Service name", Required = true)]
     public string Name { get; set; } = default!;
 
     public ValueTask ExecuteAsync(CommandContext context)
@@ -77,13 +77,13 @@ public sealed class ConfigDeleteCommand : ConfigCommandBase, ICommandHandler
 }
 
 // Deploy
-[Command("deploy", Description = "Deploy service")]
+[Command("deploy", "Deploy service")]
 public sealed class DeployCommand : ConfigCommandBase, ICommandHandler
 {
-    [Option<string>("--name", "-n", Description = "Service name", IsRequired = true)]
+    [Option<string>("--name", "-n", Description = "Service name", Required = true)]
     public string Name { get; set; } = default!;
 
-    [Option<string>("--directory", "-d", Description = "Archive directory", IsRequired = true)]
+    [Option<string>("--directory", "-d", Description = "Archive directory", Required = true)]
     public string Directory { get; set; } = default!;
 
     [Option<string>("--url", "-u", Description = "Agent url")]
