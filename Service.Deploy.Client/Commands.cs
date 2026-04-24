@@ -122,6 +122,7 @@ public sealed class DeployCommand : ConfigCommandBase, ICommandHandler
             // Update
             using var handler = new HttpClientHandler();
             handler.ServerCertificateCustomValidationCallback = static (_, _, _, _) => true;
+            // ReSharper disable once ShortLivedHttpClient
             using var client = new HttpClient(handler);
             client.Timeout = new TimeSpan(0, 0, 5, 0);
             client.BaseAddress = new Uri(url);
