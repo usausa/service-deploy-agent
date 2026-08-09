@@ -36,6 +36,29 @@ Edit services.json.
 }
 ```
 
+The target service must be registered before the first deploy. The agent only stops and starts it, so the logon account and start type configured here are kept.
+
+```
+sc create WebApp binPath=D:\WebApplication\WebApplication.exe start=auto
+```
+
+## Setting certificate
+
+The agent listens on HTTPS. Set the certificate in appsettings.json.
+
+```json
+{
+  "Kestrel": {
+    "Certificates": {
+      "Default": {
+        "Path": "sample.pfx",
+        "Password": "sample"
+      }
+    }
+  }
+}
+```
+
 ## Install client
 
 ```

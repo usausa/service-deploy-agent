@@ -1,6 +1,8 @@
 namespace Service.Deploy.Agent.Controllers;
 
 using System.IO.Compression;
+using System.Security.Cryptography;
+using System.Text;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +16,10 @@ using Service.Deploy.Agent.Settings;
 [Route("[controller]/[action]")]
 public sealed class DeployController : ControllerBase
 {
+    private const int DeleteRetryCount = 15;
+
+    private static readonly TimeSpan DeleteRetryInterval = TimeSpan.FromSeconds(1);
+
     private readonly ILogger<DeployController> log;
 
     private readonly IOptionsSnapshot<ServiceSetting> serviceSetting;
@@ -46,10 +52,17 @@ public sealed class DeployController : ControllerBase
             return NotFound();
         }
 
-        if (!String.IsNullOrEmpty(entry.Token) && (entry.Token != token))
+        if (!IsValidToken(entry.Token, token))
         {
-            log.WarnDeployTokenIsInvalid(name, token);
+            log.WarnDeployTokenIsInvalid(name);
             return BadRequest();
+        }
+
+        // Checked before stopping
+        if (String.IsNullOrWhiteSpace(entry.BinPath) || !IsDeployableDirectory(entry.Directory))
+        {
+            log.WarnDeployEntryIsInvalid(name);
+            return Problem("Service entry is not configured correctly.");
         }
 
         // Stop service
@@ -60,24 +73,11 @@ public sealed class DeployController : ControllerBase
         }
 
         // Extract archive
-        for (var i = 0; i < 15; i++)
+        if (!await DeleteDirectoryAsync(entry.Directory, cancel))
         {
-            // ReSharper disable once EmptyGeneralCatchClause
-#pragma warning disable CA1031
-            try
-            {
-                if (Directory.Exists(entry.Directory))
-                {
-                    Directory.Delete(entry.Directory, true);
-                }
-                break;
-            }
-            catch
-            {
-            }
-#pragma warning restore CA1031
-
-            await Task.Delay(1000, cancel);
+            log.WarnDeleteDirectoryFailed(name, entry.Directory);
+            _ = await serviceManager.StartAsync(entry, cancel);
+            return Problem("Delete directory failed.");
         }
 
         Directory.CreateDirectory(entry.Directory);
@@ -95,5 +95,64 @@ public sealed class DeployController : ControllerBase
 
         log.InfoDeployUpdateSuccess(name);
         return Ok("Update success.");
+    }
+
+    private static bool IsDeployableDirectory(string? path)
+    {
+        if (String.IsNullOrWhiteSpace(path) || !Path.IsPathFullyQualified(path))
+        {
+            return false;
+        }
+
+        try
+        {
+            var full = Path.TrimEndingDirectorySeparator(Path.GetFullPath(path));
+            var pathRoot = Path.TrimEndingDirectorySeparator(Path.GetPathRoot(full) ?? String.Empty);
+            return !String.Equals(full, pathRoot, StringComparison.OrdinalIgnoreCase);
+        }
+        catch (ArgumentException)
+        {
+            return false;
+        }
+    }
+
+    private static bool IsValidToken(string? expected, string? actual)
+    {
+        if (String.IsNullOrEmpty(expected) || String.IsNullOrEmpty(actual))
+        {
+            return false;
+        }
+
+        return CryptographicOperations.FixedTimeEquals(Encoding.UTF8.GetBytes(expected), Encoding.UTF8.GetBytes(actual));
+    }
+
+    private static async ValueTask<bool> DeleteDirectoryAsync(string path, CancellationToken cancel)
+    {
+        for (var i = 0; i < DeleteRetryCount; i++)
+        {
+            if (i > 0)
+            {
+                await Task.Delay(DeleteRetryInterval, cancel);
+            }
+
+            try
+            {
+                if (Directory.Exists(path))
+                {
+                    Directory.Delete(path, true);
+                }
+
+                return true;
+            }
+            catch (IOException)
+            {
+                // Retry
+            }
+            catch (UnauthorizedAccessException)
+            {
+            }
+        }
+
+        return false;
     }
 }

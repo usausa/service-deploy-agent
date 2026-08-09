@@ -5,33 +5,23 @@ using Service.Deploy.Agent.Settings;
 
 public sealed class WindowsServiceManager : IServiceManager
 {
-    public ValueTask<bool> StartAsync(ServiceEntry entry, CancellationToken cancel)
-    {
-        if (!ServiceHelper.CreateService(entry.Name, entry.Display ?? entry.Name, entry.BinPath))
-        {
-            return ValueTask.FromResult(false);
-        }
+    private const int StopTimeout = 30000;
 
-        if (!ServiceHelper.StartService(entry.Name))
-        {
-            return ValueTask.FromResult(false);
-        }
-
-        return ValueTask.FromResult(true);
-    }
+    public ValueTask<bool> StartAsync(ServiceEntry entry, CancellationToken cancel) =>
+        ValueTask.FromResult(ServiceHelper.StartService(entry.Name));
 
     public async ValueTask<bool> StopAsync(ServiceEntry entry, CancellationToken cancel)
     {
-        if (ServiceHelper.StopService(entry.Name))
+        if (ServiceHelper.IsStopped(entry.Name))
         {
-            if (!await ServiceHelper.WaitForStopAsync(entry.Name, 30000, cancel))
-            {
-                return false;
-            }
+            return true;
         }
 
-        ServiceHelper.DeleteService(entry.Name);
+        if (!ServiceHelper.StopService(entry.Name))
+        {
+            return false;
+        }
 
-        return true;
+        return await ServiceHelper.WaitForStopAsync(entry.Name, StopTimeout, cancel);
     }
 }

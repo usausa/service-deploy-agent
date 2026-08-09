@@ -89,6 +89,24 @@ public static class ServiceHelper
         return PInvoke.ControlService(service, PInvoke.SERVICE_CONTROL_STOP, out _);
     }
 
+    public static bool IsStopped(string serviceName)
+    {
+        using var scManager = PInvoke.OpenSCManager(null, null, PInvoke.SC_MANAGER_CREATE_SERVICE);
+        if (scManager.IsInvalid)
+        {
+            return false;
+        }
+
+        using var service = PInvoke.OpenService(scManager, serviceName, PInvoke.SERVICE_QUERY_STATUS);
+        if (service.IsInvalid)
+        {
+            return false;
+        }
+
+        return PInvoke.QueryServiceStatus(service, out var status) &&
+               (status.dwCurrentState == SERVICE_STATUS_CURRENT_STATE.SERVICE_STOPPED);
+    }
+
     public static async ValueTask<bool> WaitForStopAsync(string serviceName, int timeout, CancellationToken cancel = default)
     {
         using var scManager = PInvoke.OpenSCManager(null, null, PInvoke.SC_MANAGER_CREATE_SERVICE);

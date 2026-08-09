@@ -12,7 +12,7 @@ public sealed class SystemdServiceManager : IServiceManager
         chmod.StartInfo = new ProcessStartInfo
         {
             FileName = "/usr/bin/chmod",
-            Arguments = $"+x {entry.BinPath}"
+            ArgumentList = { "+x", entry.BinPath }
         };
         chmod.Start();
         await chmod.WaitForExitAsync(cancel);
@@ -25,7 +25,7 @@ public sealed class SystemdServiceManager : IServiceManager
         service.StartInfo = new ProcessStartInfo
         {
             FileName = "/usr/bin/systemctl",
-            Arguments = $"start {entry.Name}"
+            ArgumentList = { "start", entry.Name }
         };
         service.Start();
         await service.WaitForExitAsync(cancel);
@@ -43,7 +43,7 @@ public sealed class SystemdServiceManager : IServiceManager
         service.StartInfo = new ProcessStartInfo
         {
             FileName = "/usr/bin/systemctl",
-            Arguments = $"stop {entry.Name}"
+            ArgumentList = { "stop", entry.Name }
         };
         service.Start();
         await service.WaitForExitAsync(cancel);

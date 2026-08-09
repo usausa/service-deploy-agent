@@ -12,8 +12,14 @@ public static partial class Log
     [LoggerMessage(Level = LogLevel.Warning, Message = "Deploy entry not found. name=[{name}]")]
     public static partial void WarnDeployEntryNotFound(this ILogger logger, string name);
 
-    [LoggerMessage(Level = LogLevel.Warning, Message = "Deploy token is invalid. name=[{name}], token=[{token}]")]
-    public static partial void WarnDeployTokenIsInvalid(this ILogger logger, string name, string? token);
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Deploy token is invalid. name=[{name}]")]
+    public static partial void WarnDeployTokenIsInvalid(this ILogger logger, string name);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Delete directory failed. name=[{name}], directory=[{directory}]")]
+    public static partial void WarnDeleteDirectoryFailed(this ILogger logger, string name, string directory);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Deploy entry is invalid. name=[{name}]")]
+    public static partial void WarnDeployEntryIsInvalid(this ILogger logger, string name);
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Stop service failed. name=[{name}]")]
     public static partial void WarnStopServiceFailed(this ILogger logger, string name);
