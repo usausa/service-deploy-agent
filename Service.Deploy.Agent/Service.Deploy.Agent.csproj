@@ -22,8 +22,4 @@
     <Content Update="appsettings.*.json" CopyToPublishDirectory="Never" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Update="Usa.Smart.Analyzers.JapaneseComment" Version="1.8.0" />
-  </ItemGroup>
-
 </Project>
