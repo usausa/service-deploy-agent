@@ -107,7 +107,7 @@ public sealed class DeployController : ControllerBase
         try
         {
             var full = Path.TrimEndingDirectorySeparator(Path.GetFullPath(path));
-            var pathRoot = Path.TrimEndingDirectorySeparator(Path.GetPathRoot(full) ?? String.Empty);
+            var pathRoot = Path.TrimEndingDirectorySeparator(Path.GetPathRoot(full) ?? string.Empty);
             return !String.Equals(full, pathRoot, StringComparison.OrdinalIgnoreCase);
         }
         catch (ArgumentException)

@@ -40,6 +40,7 @@ public abstract class ConfigCommandBase
 
 // Config Update
 [Command("update", "Update config")]
+#pragma warning disable CA1056
 public sealed class ConfigUpdateCommand : ConfigCommandBase, ICommandHandler
 {
     [Option<string>("--name", "-n", Description = "Service name", Required = true)]
@@ -153,3 +154,4 @@ public sealed class DeployCommand : ConfigCommandBase, ICommandHandler
         }
     }
 }
+#pragma warning restore CA1056
