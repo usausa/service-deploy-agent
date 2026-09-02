@@ -28,9 +28,7 @@ public static class CommandBuilderExtensions
 
 // Config
 [Command("config", "Config settings")]
-public sealed class ConfigCommand
-{
-}
+public sealed class ConfigCommand;
 
 public abstract class ConfigCommandBase
 {

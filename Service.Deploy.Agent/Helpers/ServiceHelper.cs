@@ -54,6 +54,7 @@ public static class ServiceHelper
         return PInvoke.DeleteService(service);
     }
 
+    // ReSharper disable once RedundantUnsafeContext
     public static unsafe bool StartService(string serviceName)
     {
         using var scManager = PInvoke.OpenSCManager(null, null, PInvoke.SC_MANAGER_CREATE_SERVICE);
